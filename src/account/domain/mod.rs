@@ -1,8 +1,8 @@
-mod AccountType;
-mod AccountIdType;
-mod MoneyType;
+mod account;
+mod account_id;
+mod money;
 
-pub use AccountType::Account;
-pub use AccountIdType::AccountId;
-pub use MoneyType::Money;
+pub use account::Account;
+pub use account_id::AccountId;
+pub use money::Money;
 

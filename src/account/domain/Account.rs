@@ -1,3 +1,4 @@
+use crate::account::domain::*;
 use chrono::prelude::*;
 
 pub struct Account {
@@ -6,18 +7,18 @@ pub struct Account {
     activityWindow: ActivityWindow,
 }
 
-pub impl Account {
+impl Account {
     pub fn calculateBalance(&self) -> Money {
-        Money.add(
+        Money::add(
             self.baselineBalance,
             self.activityWindow.calculateBalance(self.id),
         )
     }
 
     pub fn withdraw(&self, money: Money, targetAccountId: AccountId) -> bool {
-        if (!self.mayWithdraw(money)) {
-            false
-        }
+        if !self.mayWithdraw(money) {
+            return false;
+        };
 
         let withdrawal = Activity {
             fromAccount: self.id,
@@ -26,24 +27,23 @@ pub impl Account {
             money,
         };
 
-        this.activityWindow.addActivity(withdrawal);
+        self.activityWindow.addActivity(withdrawal);
 
-        true
+        return true;
     }
 
     pub fn mayWithdraw(&self, money: Money) -> bool {
-        Money
-            .add(self.calculateBalance(), money.negate())
-            .isPositive()
+        Money::add(self.calculateBalance(), money.negate()).isPositive()
     }
 
-    pub fn deposit(money: Money, sourceAccountId: AcountId)->bool{
+    pub fn deposit(&self, money: Money, sourceAccountId: AccountId) -> bool {
         let deposit = Activity {
             fromAccount: self.id,
             toAccount: sourceAccountId,
             timestamp: Local::now(),
             money,
         };
+
         self.activityWindow.addActivity(deposit);
 
         true

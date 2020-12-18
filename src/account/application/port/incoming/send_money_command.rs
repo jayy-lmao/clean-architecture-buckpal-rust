@@ -1,17 +1,17 @@
 use crate::account::domain::*;
 
 pub struct SendMoneyCommand {
-    sourceAccoundId: AccountId,
-    targetAccoundId: AccountId,
+    sourceAccountId: AccountId,
+    targetAccountId: AccountId,
     money: Money,
 }
 
 impl SendMoneyCommand {
-    pub fn new(sourceAccoundId: AccountId, targetAccoundId: AccountId, money: Money) {
+    pub fn new(sourceAccoundId: AccountId, targetAccoundId: AccountId, money: Money) -> Self {
         Self {
-            sourceAccoundId: AccountId,
-            targetAccoundId: AccountId,
-            money: Money,
+            sourceAccountId: sourceAccoundId,
+            targetAccountId: targetAccoundId,
+            money,
         }
     }
     pub fn money(&self) -> Money {
@@ -21,6 +21,6 @@ impl SendMoneyCommand {
         self.targetAccountId
     }
     pub fn getSourceAccoundId(&self) -> AccountId {
-        self.sourceAccoundId
+        self.sourceAccountId
     }
 }
