@@ -1,3 +1,5 @@
+use crate::account::domain::*;
+
 pub struct SendMoneyCommand {
     sourceAccoundId: AccountId,
     targetAccoundId: AccountId,
@@ -6,7 +8,6 @@ pub struct SendMoneyCommand {
 
 impl SendMoneyCommand {
     pub fn new(sourceAccoundId: AccountId, targetAccoundId: AccountId, money: Money) {
-        requireGreaterThan(money, 0);
         Self {
             sourceAccoundId: AccountId,
             targetAccoundId: AccountId,

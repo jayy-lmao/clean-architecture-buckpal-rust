@@ -1,3 +1,5 @@
+use crate::account::application::port::incoming::SendMoneyCommand;
+
 pub struct SendMoneyService {
     loadAccountPort: LoadAccountPort,
     accountLock: AccountLockPort,
