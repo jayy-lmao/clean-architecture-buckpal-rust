@@ -1,50 +1,45 @@
-use actix_web::{get,post, App, HttpRequest, HttpServer, Result};
-use serde::Deserialize;
+use crate::account::application::port::incoming::GetAccountBalanceQuery;
+use crate::account::domain::*;
 
-use crate::account::application::port::incoming::SendMoneyUseCase;
+use actix_web::{web, HttpRequest, Result};
+use serde::{Deserialize, Serialize};
 
-macro_rules! pathVariable {
-    ($input:expr) => {
-        req.match_info().query($input).parse()?
-    }
-}
+use std::sync::Arc;
 
 
 #[derive(Deserialize)]
 struct AccountRequest {}
 
-struct AccountController {
-    getAccountBalanceQuery: GetAccountBalanceQuery,
-    listAccountsQuery: ListAccountsQuery,
-    loadAccountsQuery: loadAccountsQuery,
+#[derive(Serialize)]
+struct AccountResource {}
 
-    sendMoneyUseCase: SendMoneyUseCase,
-    createAccountUseCase: CreateAccountUseCase,
+struct AccountController {
+getAccountBalanceQuery: Arc<dyn GetAccountBalanceQuery + Sync + Send>,
+// listAccountsQuery: Arc<dyn ListAccountsQuery + Sync + Send>,
+// loadAccountsQuery: Arc<dyn LoadAccountsQuery + Sync + Send>,
+// createAccountUseCase: CreateAccountUseCase,
 }
 
 impl AccountController {
-    #[get("/accounts")]
+    // #[get("/accounts")]
     pub fn listAccounts() -> Result<Vec<AccountResource>> {
         unimplemented!();
     }
 
-
-    #[get("/accounts/{id}")]
-    pub fn getAccount() -> Result<AccountResource> {
-        let getAccount: AccountId = pathVariable!("id");
+    // #[get("/accounts/{id}")]
+    pub fn getAccount(req: HttpRequest) -> Result<AccountResource> {
+        let id: usize = req.match_info().query("id").parse().unwrap();
         unimplemented!();
     }
 
-    #[get("/accounts/{id}/balance")]
+    // #[get("/accounts/{id}/balance")]
     pub fn getAccountBalance(req: HttpRequest) -> Result<usize> {
-        let accountId: AccountId = pathVariable!("id");
+        let id: usize = req.match_info().query("id").parse().unwrap();
         unimplemented!();
     }
 
-    #[post("/accounts")]
+    // #[post("/accounts")]
     pub fn createAccount(accountReq: web::Json<AccountRequest>) -> Result<AccountResource> {
         unimplemented!();
     }
-
-
 }

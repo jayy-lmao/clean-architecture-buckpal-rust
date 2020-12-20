@@ -1,5 +1,5 @@
 use super::SendMoneyCommand;
 
 pub trait SendMoneyUseCase {
-    fn sendMoney(command: SendMoneyCommand);
+    fn sendMoney(&self, command: SendMoneyCommand) -> bool;
 }

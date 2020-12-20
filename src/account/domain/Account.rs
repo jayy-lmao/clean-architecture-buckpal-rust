@@ -1,5 +1,5 @@
 use crate::account::domain::*;
-use chrono::prelude::*;
+use chrono::Local;
 
 pub struct Account {
     id: AccountId,
@@ -15,7 +15,7 @@ impl Account {
         )
     }
 
-    pub fn withdraw(&self, money: Money, targetAccountId: AccountId) -> bool {
+    pub fn withdraw(&mut self, money: Money, targetAccountId: AccountId) -> bool {
         if !self.mayWithdraw(money) {
             return false;
         };
@@ -33,10 +33,10 @@ impl Account {
     }
 
     pub fn mayWithdraw(&self, money: Money) -> bool {
-        Money::add(self.calculateBalance(), money.negate()).isPositive()
+        Money::add(self.calculateBalance(), money.clone().negate()).isPositive()
     }
 
-    pub fn deposit(&self, money: Money, sourceAccountId: AccountId) -> bool {
+    pub fn deposit(&mut self, money: Money, sourceAccountId: AccountId) -> bool {
         let deposit = Activity {
             fromAccount: self.id,
             toAccount: sourceAccountId,

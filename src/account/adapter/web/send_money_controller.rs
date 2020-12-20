@@ -1,31 +1,38 @@
 use crate::account::application::port::incoming::SendMoneyCommand;
-use crate::application::port::incoming::SendMoneyUseCase;
+use crate::account::application::port::incoming::SendMoneyUseCase;
 use crate::account::domain::*;
-use actix_web::{get, App, HttpRequest, HttpServer, Result};
-
-macro_rules! pathVariable {
-    ($input:expr) => {
-        req.match_info().query($input).parse()?
-    };
-}
+use actix_web::{HttpRequest, Result};
+use std::sync::Arc;
 
 struct SendMoneyController {
-    sendMoneyUseCase: SendMoneyUseCase,
+    sendMoneyUseCase: Arc<dyn SendMoneyUseCase + Sync + Send>,
 }
 impl SendMoneyController {
-
-    #[post("/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}")]
-    pub fn createAccount(accountReq: web::Json<AccountRequest>) -> Result<AccountResource> {
-        let sourceAccountId: AccountId = pathVariable!("sourceAccountId");
-        let targetAccountId: AccountId = pathVariable!("targetAccountId");
-        let amount: i64 = pathVariable!("targetAccountId");
+    // #[post("/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}")]
+    pub fn sendMoney(&self, req: HttpRequest) -> Result<()> {
+        let sourceAccountId: usize = req
+            .match_info()
+            .query("sourceAccountId")
+            .parse()
+            .unwrap();
+        let targetAccountId: usize = req
+            .match_info()
+            .query("targetAccountId")
+            .parse()
+            .unwrap();
+        let amount: f64 = req
+            .match_info()
+            .query("targetAccountId")
+            .parse()
+            .unwrap();
 
         let command = SendMoneyCommand::new(
-            AccountId(sourceAccountId),
-            AccountId(targetAccountId),
-            Money(Amount),
+            AccountId::new(sourceAccountId),
+            AccountId::new(targetAccountId),
+            Money::new(amount),
         );
 
-        sendMoneyUseCase::sendMoney(command);
+        self.sendMoneyUseCase.sendMoney(command);
+        Ok(())
     }
 }

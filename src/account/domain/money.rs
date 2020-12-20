@@ -1,11 +1,11 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone,Copy)]
 pub struct Money(f64);
 
 impl Money {
     pub fn new(val: f64) -> Self {
         Self(val.to_owned())
     }
-    pub fn negate(&self) -> Money {
+    pub fn negate(&mut self) -> Money {
         self.0 = -1. * self.0;
         *self
     }
