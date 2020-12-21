@@ -15,6 +15,7 @@ struct State {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv::dotenv();
     let account_controller = AccountController {};
     let state = State {
         account_controller

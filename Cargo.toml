@@ -10,3 +10,7 @@ edition = "2018"
 chrono = "0.4.19"
 actix-web = "3.3.2"
 serde = "1.0.118"
+sqlx = {version="0.4.2", features=["sqlite","runtime-actix-native-tls","chrono"]}
+async-trait = "0.1.42"
+lazy_static = "1.4.0"
+dotenv = "0.15.0"

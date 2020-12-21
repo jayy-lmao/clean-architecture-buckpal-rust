@@ -2,9 +2,9 @@ use crate::account::domain::*;
 use chrono::Local;
 
 pub struct Account {
-    id: AccountId,
+    pub id: AccountId,
     baselineBalance: Money,
-    activityWindow: ActivityWindow,
+    pub activityWindow: ActivityWindow,
 }
 
 impl Account {
@@ -47,5 +47,19 @@ impl Account {
         self.activityWindow.addActivity(deposit);
 
         true
+    }
+    // pub fn withoutId(baselineBalance: Money, activityWindow: ActivityWindow) -> Account {
+    //     return Account::new(accountId, baselineBalance, activityWindow)
+    // }
+    pub fn withId(
+        accountId: AccountId,
+        baselineBalance: Money,
+        activityWindow: ActivityWindow,
+    ) -> Account {
+        return Account {
+            id: accountId,
+            baselineBalance,
+            activityWindow,
+        };
     }
 }
