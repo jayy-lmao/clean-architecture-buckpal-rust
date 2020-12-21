@@ -28,7 +28,7 @@ impl AccountRepository {
         }
     }
 
-    async fn findById(&self, id: i64) -> Result<AccountEntity, sqlx::Error> {
+    pub async fn findById(&self, id: i64) -> Result<AccountEntity, sqlx::Error> {
         let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
             .fetch_one(&self.pool)
             .await;
@@ -37,7 +37,7 @@ impl AccountRepository {
     }
 }
 
-struct ActivityRepository {
+pub struct ActivityRepository {
     pool: SqlitePool,
 }
 

@@ -1,17 +1,24 @@
 use crate::account::application::port::incoming::GetAccountBalanceQuery;
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::domain::*;
-use chrono::prelude::*;
+use async_trait::async_trait;
+use chrono::Utc;
 use std::sync::Arc;
 
 pub struct GetAccountBalanceService {
     loadAccountPort: Arc<dyn LoadAccountPort + Sync + Send>,
 }
 
+#[async_trait]
 impl GetAccountBalanceQuery for GetAccountBalanceService {
-    fn getAccountBalance(&self, accountId: AccountId) -> Money {
-        self.loadAccountPort
-            .loadAccount(accountId, Local::now())
-            .calculateBalance()
+    async fn getAccountBalance(
+        &self,
+        accountId: AccountId,
+    ) -> Result<Money, dyn std::error::Error> {
+        Ok(self
+            .loadAccountPort
+            .loadAccount(accountId, Utc::now().naive_utc())
+            .await
+            .calculateBalance())
     }
 }

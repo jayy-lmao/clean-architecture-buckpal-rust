@@ -1,5 +1,5 @@
 use crate::account::domain::*;
-use chrono::Local;
+use chrono::Utc;
 
 pub struct Account {
     pub id: AccountId,
@@ -23,7 +23,7 @@ impl Account {
         let withdrawal = Activity {
             fromAccount: self.id,
             toAccount: targetAccountId,
-            timestamp: Local::now(),
+            timestamp: Utc::now().naive_utc(),
             money,
         };
 
@@ -40,7 +40,7 @@ impl Account {
         let deposit = Activity {
             fromAccount: self.id,
             toAccount: sourceAccountId,
-            timestamp: Local::now(),
+            timestamp: Utc::now().naive_utc(),
             money,
         };
 

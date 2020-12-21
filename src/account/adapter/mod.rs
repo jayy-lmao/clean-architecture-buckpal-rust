@@ -1,4 +1,5 @@
 pub mod web;
 pub mod outgoing;
 pub mod entities;
-pub mod persistence;
+pub mod repositories;
+pub mod account_persistence_adapter;

@@ -1,9 +1,12 @@
 #[derive(Clone, Copy)]
-pub struct AccountId(usize);
+pub struct AccountId(i64);
 
 impl AccountId {
-    pub fn new(id: usize) -> Self {
+    pub fn new(id: i64) -> Self {
         Self(id.to_owned())
+    }
+    pub fn to_i64(&self) -> i64 {
+        self.0
     }
 }
 

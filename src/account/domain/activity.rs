@@ -1,9 +1,9 @@
 use crate::account::domain::*;
-use chrono::{DateTime, Local};
+use chrono::NaiveDateTime;
 
 pub struct Activity {
     pub fromAccount: AccountId,
     pub toAccount: AccountId,
-    pub timestamp: DateTime<Local>,
+    pub timestamp: NaiveDateTime,
     pub money: Money,
 }

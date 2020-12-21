@@ -1,8 +1,8 @@
 #[derive(Debug, Clone,Copy)]
-pub struct Money(f64);
+pub struct Money(f32);
 
 impl Money {
-    pub fn new(val: f64) -> Self {
+    pub fn new(val: f32) -> Self {
         Self(val.to_owned())
     }
     pub fn negate(&mut self) -> Money {

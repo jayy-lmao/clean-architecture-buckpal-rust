@@ -1,6 +1,8 @@
 use crate::account::domain::*;
-use chrono::prelude::{DateTime, Local};
+use chrono::NaiveDateTime;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait LoadAccountPort {
-    fn loadAccount(&self, accountId: AccountId, timeStamp: DateTime<Local>) -> Account;
+    async fn loadAccount(&self, accountId: AccountId, timeStamp: NaiveDateTime) -> Result<Account, dyn std::error::Error>;
 }
