@@ -2,7 +2,7 @@ use super::entities::AccountEntity;
 use super::entities::ActivityEntity;
 use super::entities::BalanceEntity;
 
-use anyhow::anyhow;
+use anyhow;
 use chrono::NaiveDateTime;
 use lazy_static::lazy_static;
 use sqlx;
