@@ -1,6 +1,6 @@
 use super::SendMoneyCommand;
-use async_trait::async_trait;
 use anyhow;
+use async_trait::async_trait;
 
 #[async_trait]
 pub trait SendMoneyUseCase {

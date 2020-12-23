@@ -5,12 +5,8 @@ pub struct ActivityWindow {
 }
 
 impl ActivityWindow {
-    pub fn new(
-    activities: Vec<Activity>,
-        ) -> Self {
-        Self {
-            activities,
-        }
+    pub fn new(activities: Vec<Activity>) -> Self {
+        Self { activities }
     }
     pub fn addActivity(&mut self, a: Activity) {
         self.activities.push(a);

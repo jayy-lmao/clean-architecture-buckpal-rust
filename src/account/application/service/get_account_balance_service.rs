@@ -10,7 +10,6 @@ pub struct GetAccountBalanceService {
     pub loadAccountPort: Arc<dyn LoadAccountPort + Sync + Send>,
 }
 
-
 #[async_trait]
 impl GetAccountBalanceQuery for GetAccountBalanceService {
     async fn getAccountBalance(&self, accountId: AccountId) -> anyhow::Result<Money> {

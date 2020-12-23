@@ -2,10 +2,10 @@ use crate::account::application::port::incoming::SendMoneyCommand;
 use crate::account::application::port::incoming::SendMoneyUseCase;
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::application::port::outgoing::update_account_state_port::UpdateAccountStatePort;
-use std::sync::Arc;
-use chrono::Utc;
-use async_trait::async_trait;
 use anyhow;
+use async_trait::async_trait;
+use chrono::Utc;
+use std::sync::Arc;
 
 pub struct SendMoneyService {
     loadAccountPort: Arc<dyn LoadAccountPort + Sync + Send>,
@@ -21,13 +21,17 @@ impl SendMoneyUseCase for SendMoneyService {
         // TODO: validate business rules
         // TODO: manipulate model state
         let timestamp = Utc::now().naive_utc();
-        let mut sourceAccount = self.loadAccountPort.loadAccount(command.getSourceAccoundId(), timestamp).await?;
+        let mut sourceAccount = self
+            .loadAccountPort
+            .loadAccount(command.getSourceAccoundId(), timestamp)
+            .await?;
 
         let money = command.money();
 
         let success = sourceAccount.withdraw(money, command.getTargetAccountId());
         if success {
-            self.updateAccountStatePort.updateAccountState(sourceAccount, timestamp);
+            self.updateAccountStatePort
+                .updateAccountState(sourceAccount, timestamp);
         };
 
         Ok(success)

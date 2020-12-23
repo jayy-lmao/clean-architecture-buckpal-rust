@@ -9,12 +9,14 @@ impl SendMoneyController {}
 pub mod send_money_routes {
     use crate::account::application::port::incoming::SendMoneyCommand;
     use crate::account::domain::*;
-    use actix_web::{get,post, web, HttpRequest, HttpResponse, Responder, Result};
+    use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder, Result};
     use anyhow::anyhow;
     use serde::{Deserialize, Serialize};
 
     #[post("/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}")]
-    pub async fn sendMoney(&self, req: HttpRequest, 
+    pub async fn sendMoney(
+        &self,
+        req: HttpRequest,
         data: web::Data<crate::State>,
     ) -> impl Responder {
         let sourceAccountId: i64 = req.match_info().query("sourceAccountId").parse().unwrap();

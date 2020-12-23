@@ -1,6 +1,9 @@
+use std::unimplemented;
+
 use crate::account::adapter::entities::*;
 use crate::account::adapter::repositories::{AccountRepository, ActivityRepository};
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
+use crate::account::application::port::outgoing::update_account_state_port::UpdateAccountStatePort;
 use crate::account::domain::*;
 use anyhow;
 use async_trait::async_trait;
@@ -39,7 +42,6 @@ pub mod AccountMapper {
     }
 }
 
-
 pub struct AccountPersistenceAdapter {
     accountRepository: AccountRepository,
     activityRepository: ActivityRepository,
@@ -51,6 +53,16 @@ impl AccountPersistenceAdapter {
             accountRepository: AccountRepository::new(),
             activityRepository: ActivityRepository::new(),
         }
+    }
+}
+#[async_trait]
+impl UpdateAccountStatePort for AccountPersistenceAdapter {
+    async fn updateAccountState(
+        &self,
+        account: Account,
+        timestamp: NaiveDateTime,
+    ) -> anyhow::Result<Account> {
+        unimplemented!()
     }
 }
 
