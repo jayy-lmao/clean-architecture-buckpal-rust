@@ -4,10 +4,10 @@ use async_trait::async_trait;
 use chrono::NaiveDateTime;
 
 #[async_trait]
-pub trait LoadAccountPort {
-    async fn loadAccount(
+pub trait UpdateAccountStatePort {
+    async fn updateAccountState(
         &self,
-        accountId: AccountId,
+        account: Account,
         timeStamp: NaiveDateTime,
     ) -> anyhow::Result<Account>;
 }

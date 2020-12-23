@@ -1,20 +1,36 @@
-// use crate::account::application::port::incoming::GetAccountBalanceQuery;
-#[derive(Debug, Clone, Copy)]
+use crate::account::application::port::incoming::GetAccountBalanceQuery;
+use crate::account::domain::*;
+use std::sync::Arc;
+// use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
+#[derive(Clone)]
 pub struct AccountController {
-    // getAccountBalanceQuery: Arc<dyn GetAccountBalanceQuery + Sync + Send>,
-// listAccountsQuery: Arc<dyn ListAccountsQuery + Sync + Send>,
-// loadAccountsQuery: Arc<dyn LoadAccountsQuery + Sync + Send>,
-// createAccountUseCase: CreateAccountUseCase,
+    pub getAccountBalanceQuery: Arc<dyn GetAccountBalanceQuery + Sync + Send>,
+    // listAccountsQuery: Arc<dyn ListAccountsQuery + Sync + Send>,
+    // loadAccountPort: Arc<dyn LoadAccountPort + Sync + Send>,
+    // createAccountUseCase: CreateAccountUseCase,
+}
+impl AccountController {
+    pub async fn getAccountBalance(&self, id: i64) -> Option<f32> {
+        let account_balance = self
+            .getAccountBalanceQuery
+            .getAccountBalance(AccountId::new(id))
+            .await;
+        match account_balance {
+            Ok(balance) => Some(balance.to_f32()),
+            Err(_) => None,
+        }
+    }
 }
 
 pub mod account_routes {
-    use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder, Result};
+    use actix_web::{get, web, HttpRequest, HttpResponse, Responder, Result};
+    use anyhow::anyhow;
     use serde::{Deserialize, Serialize};
 
-    #[derive(Clone,Copy,Debug,Deserialize,Serialize)]
+    #[derive(Clone, Copy, Debug, Deserialize, Serialize)]
     struct AccountRequest {}
 
-    #[derive(Clone,Copy,Debug,Serialize,Deserialize)]
+    #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
     pub struct AccountResource {
         pub accountId: usize,
     }
@@ -26,19 +42,23 @@ pub mod account_routes {
     }
     */
 
-    #[get("/accounts/{id}")]
-    pub async fn getAccount(req: HttpRequest) -> impl Responder {
-        // Result<web::Json<AccountResource>> {
-        let id: usize = req.match_info().query("id").parse().unwrap();
-        HttpResponse::Ok().json(AccountResource { accountId: id })
-    }
+    // #[get("/accounts/{id}")]
+    // pub async fn getAccount(req: HttpRequest, data: web::Data<crate::State>) -> impl Responder {
+    //     let id: i64 = req.match_info().query("id").parse().unwrap();
+    //     let account = data.account_controller.loadAccount(id);
 
-    /*
+    //     HttpResponse::Ok().json(account)
+    // }
+
     #[get("/accounts/{id}/balance")]
-    pub fn getAccountBalance(req: HttpRequest) -> Result<usize> {
-        let id: usize = req.match_info().query("id").parse().unwrap();
-        unimplemented!();
+    async fn getAccountBalance(
+        web::Path(id): web::Path<i64>,
+        data: web::Data<crate::State>,
+    ) -> impl Responder {
+        let balance = data.account_controller.getAccountBalance(id).await;
+        HttpResponse::Ok().json(balance)
     }
+    /*
 
     #[post("/accounts")]
     pub fn createAccount(accountReq: web::Json<AccountRequest>) -> Result<AccountResource> {

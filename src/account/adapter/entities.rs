@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use sqlx;
 
 #[derive(sqlx::FromRow)]
-pub struct  AccountEntity {
+pub struct AccountEntity {
     pub id: i64,
 }
 

@@ -2,13 +2,12 @@ use super::entities::AccountEntity;
 use super::entities::ActivityEntity;
 use super::entities::BalanceEntity;
 
+use anyhow::anyhow;
 use chrono::NaiveDateTime;
 use lazy_static::lazy_static;
 use sqlx;
 use sqlx::sqlite::SqlitePool;
 use std::env;
-use anyhow::anyhow;
-
 
 lazy_static! {
     pub static ref DATABASE_URL: String =
@@ -23,17 +22,17 @@ pub struct AccountRepository {
 }
 
 impl AccountRepository {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             pool: DB_POOL.clone(),
         }
     }
 
     pub async fn findById(&self, id: i64) -> anyhow::Result<AccountEntity> {
-     let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
+        let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
             .fetch_one(&self.pool)
             .await?;
-    Ok(account)
+        Ok(account)
     }
 }
 
@@ -42,28 +41,28 @@ pub struct ActivityRepository {
 }
 
 impl ActivityRepository {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             pool: DB_POOL.clone(),
         }
     }
 
     pub async fn findById(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
-     let activities = sqlx::query_as!(
+        let activities = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities WHERE id = $1"#,
             id
         )
         .fetch_all(&self.pool)
         .await?;
-     Ok(activities)
+        Ok(activities)
     }
     pub async fn findByOwnerSince(
         &self,
         ownerAccountId: i64,
         since: NaiveDateTime,
     ) -> anyhow::Result<Vec<ActivityEntity>> {
-        let activities =  sqlx::query_as!(
+        let activities = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities 
             WHERE ownerAccountId = $1
@@ -87,7 +86,7 @@ impl ActivityRepository {
         .fetch_one(&req.state().clone().db_pool)
         .await?;
          * */
-     let balance = sqlx::query_as::<_, BalanceEntity>(
+        let balance = sqlx::query_as::<_, BalanceEntity>(
             "
            SELECT sum(amount) FROM activities
            WHERE targetAccountId = $1
@@ -113,7 +112,7 @@ impl ActivityRepository {
         .fetch_one(&req.state().clone().db_pool)
         .await?;
          * */
-       let balance = sqlx::query_as::<_, BalanceEntity>(
+        let balance = sqlx::query_as::<_, BalanceEntity>(
             "
            SELECT sum(amount) FROM activities
            WHERE sourceAccountId = $1

@@ -29,7 +29,7 @@ impl Account {
 
         self.activityWindow.addActivity(withdrawal);
 
-        return true;
+        true
     }
 
     pub fn mayWithdraw(&self, money: Money) -> bool {

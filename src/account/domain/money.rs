@@ -1,7 +1,10 @@
-#[derive(Debug, Clone,Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Money(f32);
 
 impl Money {
+    pub fn to_f32(&self) -> f32 {
+        self.0
+    }
     pub fn new(val: f32) -> Self {
         Self(val.to_owned())
     }

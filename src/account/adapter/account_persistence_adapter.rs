@@ -2,13 +2,13 @@ use crate::account::adapter::entities::*;
 use crate::account::adapter::repositories::{AccountRepository, ActivityRepository};
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::domain::*;
+use anyhow;
 use async_trait::async_trait;
 use chrono::NaiveDateTime;
-use anyhow;
 
 pub mod ActivityMapper {
     use super::*;
-    pub fn mapEntityToDomain(activity_entity: ActivityEntity) -> Activity {
+    pub fn mapEntityToDomain(activity_entity: &ActivityEntity) -> Activity {
         Activity {
             fromAccount: AccountId::new(activity_entity.sourceAccountId),
             toAccount: AccountId::new(activity_entity.targetAccountId),
@@ -29,17 +29,29 @@ pub mod AccountMapper {
         Account::withId(
             AccountId::new(account_entity.id),
             Money::new(deposit_balance - withdraw_balance),
-            activities
-                .iter()
-                .map(ActivityMapper::mapEntityToDomain)
-                .collect(),
+            ActivityWindow::new(
+                activities
+                    .iter()
+                    .map(ActivityMapper::mapEntityToDomain)
+                    .collect(),
+            ),
         )
     }
 }
 
+
 pub struct AccountPersistenceAdapter {
     accountRepository: AccountRepository,
     activityRepository: ActivityRepository,
+}
+
+impl AccountPersistenceAdapter {
+    pub fn default() -> Self {
+        Self {
+            accountRepository: AccountRepository::new(),
+            activityRepository: ActivityRepository::new(),
+        }
+    }
 }
 
 #[async_trait]
@@ -58,11 +70,13 @@ impl LoadAccountPort for AccountPersistenceAdapter {
 
         let withdraw_balance: f32 = self
             .activityRepository
-            .getWithdrawalBalance(accountId.to_i64(), baselineDate).await?;
+            .getWithdrawalBalance(accountId.to_i64(), baselineDate)
+            .await?;
 
         let deposit_balance: f32 = self
             .activityRepository
-            .getDepositBalance(accountId.to_i64(), baselineDate).await?;
+            .getDepositBalance(accountId.to_i64(), baselineDate)
+            .await?;
 
         return Ok(AccountMapper::mapEntityToDomain(
             account_entity,
