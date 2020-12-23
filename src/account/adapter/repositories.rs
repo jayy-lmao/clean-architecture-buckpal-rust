@@ -7,7 +7,8 @@ use lazy_static::lazy_static;
 use sqlx;
 use sqlx::sqlite::SqlitePool;
 use std::env;
-use std::result::Result;
+use anyhow::anyhow;
+
 
 lazy_static! {
     pub static ref DATABASE_URL: String =
@@ -28,12 +29,11 @@ impl AccountRepository {
         }
     }
 
-    pub async fn findById(&self, id: i64) -> Result<AccountEntity, sqlx::Error> {
-        let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
+    pub async fn findById(&self, id: i64) -> anyhow::Result<AccountEntity> {
+     let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
             .fetch_one(&self.pool)
-            .await;
-
-        account
+            .await?;
+    Ok(account)
     }
 }
 
@@ -48,23 +48,22 @@ impl ActivityRepository {
         }
     }
 
-    async fn findById(&self, id: i64) -> Result<Vec<ActivityEntity>, sqlx::Error> {
-        let activities = sqlx::query_as!(
+    pub async fn findById(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
+     let activities = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities WHERE id = $1"#,
             id
         )
         .fetch_all(&self.pool)
-        .await;
-
-        activities
+        .await?;
+     Ok(activities)
     }
-    async fn findByOwnerSince(
+    pub async fn findByOwnerSince(
         &self,
         ownerAccountId: i64,
         since: NaiveDateTime,
-    ) -> Result<Vec<ActivityEntity>, sqlx::Error> {
-        let activities = sqlx::query_as!(
+    ) -> anyhow::Result<Vec<ActivityEntity>> {
+        let activities =  sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities 
             WHERE ownerAccountId = $1
@@ -74,21 +73,21 @@ impl ActivityRepository {
             since,
         )
         .fetch_all(&self.pool)
-        .await;
+        .await?;
 
-        activities
+        Ok(activities)
     }
-    async fn getDepositBalance(
+    pub async fn getDepositBalance(
         &self,
         accountId: i64,
         until: NaiveDateTime,
-    ) -> Result<f32, sqlx::Error> {
+    ) -> anyhow::Result<f32> {
         /*
          *     let (is_connected,): (bool,) = sqlx::query_as("SELECT true")
         .fetch_one(&req.state().clone().db_pool)
         .await?;
          * */
-        let balance = sqlx::query_as::<_, BalanceEntity>(
+     let balance = sqlx::query_as::<_, BalanceEntity>(
             "
            SELECT sum(amount) FROM activities
            WHERE targetAccountId = $1
@@ -101,21 +100,20 @@ impl ActivityRepository {
         .bind(until)
         .fetch_one(&self.pool)
         .await?;
-
         Ok(balance.totalAmount)
     }
 
-    async fn getWithdrawalBalance(
+    pub async fn getWithdrawalBalance(
         &self,
         accountId: i64,
         until: NaiveDateTime,
-    ) -> Result<f32, sqlx::Error> {
+    ) -> anyhow::Result<f32> {
         /*
          *     let (is_connected,): (bool,) = sqlx::query_as("SELECT true")
         .fetch_one(&req.state().clone().db_pool)
         .await?;
          * */
-        let balance = sqlx::query_as::<_, BalanceEntity>(
+       let balance = sqlx::query_as::<_, BalanceEntity>(
             "
            SELECT sum(amount) FROM activities
            WHERE sourceAccountId = $1

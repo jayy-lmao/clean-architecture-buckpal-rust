@@ -4,6 +4,7 @@ use crate::account::application::port::outgoing::load_account_port::LoadAccountP
 use crate::account::domain::*;
 use async_trait::async_trait;
 use chrono::NaiveDateTime;
+use anyhow;
 
 pub mod ActivityMapper {
     use super::*;
@@ -47,27 +48,23 @@ impl LoadAccountPort for AccountPersistenceAdapter {
         &self,
         accountId: AccountId,
         baselineDate: NaiveDateTime,
-    ) -> Result<Account, dyn std::error::Error> {
-        let account_entity = match self.accountRepository.findById(accountId.to_i64()).await {
-            Ok(account) => account,
-            Err(_) => return std::error::Error::from("yikes"),
-        };
+    ) -> anyhow::Result<Account> {
+        let account_entity = self.accountRepository.findById(accountId.to_i64()).await?;
 
         let activities = self
             .activityRepository
             .findByOwnerSince(accountId.to_i64(), baselineDate)
-            .await
-            .unwrap_or(Vec::new());
+            .await?;
 
-        let withdraw_balance = self
+        let withdraw_balance: f32 = self
             .activityRepository
-            .getWithdrawalBalance(accountId.to_i64(), baselineDate);
+            .getWithdrawalBalance(accountId.to_i64(), baselineDate).await?;
 
-        let deposit_balance = self
+        let deposit_balance: f32 = self
             .activityRepository
-            .getDepositBalance(accountId.to_i64(), baselineDate);
+            .getDepositBalance(accountId.to_i64(), baselineDate).await?;
 
-        return Some(AccountMapper::mapEntityToDomain(
+        return Ok(AccountMapper::mapEntityToDomain(
             account_entity,
             activities,
             withdraw_balance,

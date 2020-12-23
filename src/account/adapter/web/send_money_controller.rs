@@ -10,17 +10,17 @@ struct SendMoneyController {
 impl SendMoneyController {
     // #[post("/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}")]
     pub fn sendMoney(&self, req: HttpRequest) -> Result<()> {
-        let sourceAccountId: usize = req
+        let sourceAccountId: i64 = req
             .match_info()
             .query("sourceAccountId")
             .parse()
             .unwrap();
-        let targetAccountId: usize = req
+        let targetAccountId: i64 = req
             .match_info()
             .query("targetAccountId")
             .parse()
             .unwrap();
-        let amount: f64 = req
+        let amount: f32 = req
             .match_info()
             .query("targetAccountId")
             .parse()

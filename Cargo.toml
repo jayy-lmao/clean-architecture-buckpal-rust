@@ -14,3 +14,4 @@ sqlx = {version="0.4.2", features=["sqlite","runtime-actix-native-tls","chrono"]
 async-trait = "0.1.42"
 lazy_static = "1.4.0"
 dotenv = "0.15.0"
+anyhow = "1.0.36"
