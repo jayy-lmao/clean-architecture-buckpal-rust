@@ -19,6 +19,16 @@ pub mod ActivityMapper {
             money: Money::new(activity_entity.amount),
         }
     }
+    pub fn mapDomainToEntity(activity: &Activity, ownerAccountId: i64) -> ActivityEntity {
+        ActivityEntity {
+            id: -1, // this should be ignored by insert
+            ownerAccountId: ownerAccountId,
+            sourceAccountId: activity.fromAccount.to_i64(),
+            targetAccountId: activity.toAccount.to_i64(),
+            timestamp: activity.timestamp,
+            amount: activity.money.to_f32(),
+        }
+    }
 }
 
 pub mod AccountMapper {
@@ -61,8 +71,30 @@ impl UpdateAccountStatePort for AccountPersistenceAdapter {
         &self,
         account: Account,
         timestamp: NaiveDateTime,
-    ) -> anyhow::Result<Account> {
-        unimplemented!()
+    ) -> anyhow::Result<()> {
+        dbg!("Updating Account State");
+        let latest_recorded_transaction_date = self
+            .activityRepository
+            .findLatestByOwner(account.id.to_i64())
+            .await?;
+
+        let activities: Vec<ActivityEntity> = account
+            .activityWindow
+            .activities
+            .iter()
+            .filter(|&a| match &latest_recorded_transaction_date {
+                None => true,
+                Some(latest_recorded_transaction_date) => {
+                    a.timestamp > latest_recorded_transaction_date.timestamp
+                }
+            })
+            .map(|a| ActivityMapper::mapDomainToEntity(a, account.id.to_i64()))
+            .collect();
+
+        self.activityRepository
+            .insertActivities(dbg!(activities))
+            .await?;
+        Ok(())
     }
 }
 

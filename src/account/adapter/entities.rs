@@ -4,9 +4,10 @@ use sqlx;
 #[derive(sqlx::FromRow)]
 pub struct AccountEntity {
     pub id: i64,
+    pub name: Option<String>,
 }
 
-#[derive(sqlx::FromRow)]
+#[derive(sqlx::FromRow, Debug)]
 pub struct ActivityEntity {
     pub id: i64,
     pub timestamp: NaiveDateTime,

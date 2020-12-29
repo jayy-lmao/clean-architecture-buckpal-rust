@@ -9,5 +9,5 @@ pub trait UpdateAccountStatePort {
         &self,
         account: Account,
         timeStamp: NaiveDateTime,
-    ) -> anyhow::Result<Account>;
+    ) -> anyhow::Result<()>;
 }

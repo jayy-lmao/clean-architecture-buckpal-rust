@@ -1,6 +1,7 @@
 use crate::account::application::port::incoming::SendMoneyUseCase;
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct SendMoneyController {
     pub sendMoneyUseCase: Arc<dyn SendMoneyUseCase + Sync + Send>,
 }
@@ -14,14 +15,10 @@ pub mod send_money_routes {
     use serde::{Deserialize, Serialize};
 
     #[post("/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}")]
-    pub async fn sendMoney(
-        &self,
-        req: HttpRequest,
-        data: web::Data<crate::State>,
-    ) -> impl Responder {
+    pub async fn sendMoney(req: HttpRequest, data: web::Data<crate::State>) -> impl Responder {
         let sourceAccountId: i64 = req.match_info().query("sourceAccountId").parse().unwrap();
         let targetAccountId: i64 = req.match_info().query("targetAccountId").parse().unwrap();
-        let amount: f32 = req.match_info().query("targetAccountId").parse().unwrap();
+        let amount: f32 = req.match_info().query("amount").parse().unwrap();
 
         let command = SendMoneyCommand::new(
             AccountId::new(sourceAccountId),
@@ -29,7 +26,10 @@ pub mod send_money_routes {
             Money::new(amount),
         );
 
-        data.sendMoneyUseCase.sendMoney(command);
-        Ok(())
+        // data.sendMoneyUseCase.sendMoney(command);
+        data.send_money_controller
+            .sendMoneyUseCase
+            .sendMoney(command).await;
+        HttpResponse::Ok()
     }
 }

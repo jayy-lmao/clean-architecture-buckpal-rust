@@ -18,6 +18,7 @@ async fn greet(req: HttpRequest) -> impl Responder {
 #[derive(Clone)]
 pub struct State {
     account_controller: AccountController,
+    send_money_controller: SendMoneyController,
 }
 
 #[actix_web::main]
@@ -41,7 +42,7 @@ async fn main() -> Result<(), std::io::Error> {
         getAccountBalanceQuery: getAccountBalanceService,
     };
 
-    let state = State { account_controller };
+    let state = State { account_controller, send_money_controller };
 
     HttpServer::new(move || {
         App::new()

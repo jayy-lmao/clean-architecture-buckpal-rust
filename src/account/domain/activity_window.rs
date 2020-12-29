@@ -1,7 +1,8 @@
 use crate::account::domain::*;
 
+#[derive(Debug)]
 pub struct ActivityWindow {
-    activities: Vec<Activity>,
+    pub activities: Vec<Activity>,
 }
 
 impl ActivityWindow {
@@ -12,6 +13,7 @@ impl ActivityWindow {
         self.activities.push(a);
     }
     pub fn calculateBalance(&self, id: AccountId) -> Money {
+        dbg!(&self.activities);
         self.activities
             .iter()
             .map(|a| match (a.toAccount == id, a.fromAccount == id) {

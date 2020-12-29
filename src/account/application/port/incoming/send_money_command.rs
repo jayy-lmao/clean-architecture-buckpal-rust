@@ -1,5 +1,6 @@
 use crate::account::domain::*;
 
+#[derive(Debug)]
 pub struct SendMoneyCommand {
     sourceAccountId: AccountId,
     targetAccountId: AccountId,

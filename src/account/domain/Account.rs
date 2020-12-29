@@ -1,6 +1,7 @@
 use crate::account::domain::*;
 use chrono::Utc;
 
+#[derive(Debug)]
 pub struct Account {
     pub id: AccountId,
     baselineBalance: Money,
@@ -38,8 +39,8 @@ impl Account {
 
     pub fn deposit(&mut self, money: Money, sourceAccountId: AccountId) -> bool {
         let deposit = Activity {
-            fromAccount: self.id,
-            toAccount: sourceAccountId,
+            fromAccount: sourceAccountId,
+            toAccount: self.id,
             timestamp: Utc::now().naive_utc(),
             money,
         };

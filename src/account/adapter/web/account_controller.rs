@@ -17,7 +17,10 @@ impl AccountController {
             .await;
         match account_balance {
             Ok(balance) => Some(balance.to_f32()),
-            Err(_) => None,
+            Err(err) => {
+                dbg!(err);
+                None
+            }
         }
     }
 }
