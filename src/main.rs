@@ -23,7 +23,7 @@ pub struct State {
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    dotenv::dotenv();
+    dotenv::dotenv().unwrap();
     let account_adapter = Arc::new(AccountPersistenceAdapter::default());
 
     let get_account_balance_service = Arc::new(GetAccountBalanceService {

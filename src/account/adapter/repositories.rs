@@ -105,8 +105,8 @@ impl ActivityRepository {
             Ok(activity) => Ok(Some(activity)),
             Err(error) => match error {
                 sqlx::Error::RowNotFound => Ok(None),
-                _ => Err(anyhow::Error::new(error))
-            }
+                _ => Err(anyhow::Error::new(error)),
+            },
         }
     }
 
