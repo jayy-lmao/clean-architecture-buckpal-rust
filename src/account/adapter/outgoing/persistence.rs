@@ -1,5 +1,5 @@
-use crate::account::adapter::entities::AccountEntity;
-use crate::account::adapter::entities::ActivityEntity;
+use crate::account::adapter::persistence::entities::AccountEntity;
+use crate::account::adapter::persistence::entities::ActivityEntity;
 use async_trait::async_trait;
 
 #[async_trait]

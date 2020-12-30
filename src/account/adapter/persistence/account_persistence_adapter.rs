@@ -1,10 +1,12 @@
-use crate::account::adapter::entities::*;
-use crate::account::adapter::repositories::{AccountRepository, ActivityRepository};
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::application::port::outgoing::update_account_state_port::UpdateAccountStatePort;
 use crate::account::domain::*;
 use async_trait::async_trait;
 use chrono::NaiveDateTime;
+use entities::*;
+use repositories::*;
+
+use super::{entities, repositories};
 
 pub mod activity_mapper {
     use super::*;

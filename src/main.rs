@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 mod account;
 use account::adapter::{
-    account_persistence_adapter::AccountPersistenceAdapter,
+    persistence::account_persistence_adapter::AccountPersistenceAdapter,
     web::account_controller::{account_routes, AccountController},
     web::send_money_controller::{send_money_routes, SendMoneyController},
 };
