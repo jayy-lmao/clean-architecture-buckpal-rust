@@ -69,7 +69,6 @@ impl UpdateAccountStatePort for AccountPersistenceAdapter {
         account: Account,
         _timestamp: NaiveDateTime,
     ) -> anyhow::Result<()> {
-        dbg!("Updating Account State");
         let latest_recorded_transaction_date = self
             .activity_repository
             .find_latest_by_owner(account.id.to_i64())
@@ -89,7 +88,7 @@ impl UpdateAccountStatePort for AccountPersistenceAdapter {
             .collect();
 
         self.activity_repository
-            .insert_activities(dbg!(activities))
+            .insert_activities(activities)
             .await?;
         Ok(())
     }
