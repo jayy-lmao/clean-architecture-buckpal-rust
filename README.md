@@ -1,6 +1,7 @@
 # Buckpal - Hex Architecture
 
-
+![Hex Architecture](https://reflectoring.io/assets/img/posts/spring-hexagonal/hexagonal-architecture.png)
+_src: reflectoring.io_
 
 ## What is this? 
 
