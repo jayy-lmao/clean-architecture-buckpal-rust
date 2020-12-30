@@ -43,16 +43,16 @@ impl ActivityRepository {
         }
     }
 
-    pub async fn find_by_id(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
-        let activities = sqlx::query_as!(
-            ActivityEntity,
-            r#"SELECT * FROM activities WHERE id = $1"#,
-            id
-        )
-        .fetch_all(&self.pool)
-        .await?;
-        Ok(activities)
-    }
+    // pub async fn find_by_id(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
+    //     let activities = sqlx::query_as!(
+    //         ActivityEntity,
+    //         r#"SELECT * FROM activities WHERE id = $1"#,
+    //         id
+    //     )
+    //     .fetch_all(&self.pool)
+    //     .await?;
+    //     Ok(activities)
+    // }
 
     pub async fn insert_activities(&self, activities: Vec<ActivityEntity>) -> anyhow::Result<()> {
         let values: String = activities
@@ -103,11 +103,9 @@ impl ActivityRepository {
 
         match activity {
             Ok(activity) => Ok(Some(activity)),
-            Err(error) => {
-                if let _error = sqlx::Error::RowNotFound {
-                    return Ok(None);
-                }
-                Err(anyhow::Error::new(error))
+            Err(error) => match error {
+                sqlx::Error::RowNotFound => Ok(None),
+                _ => Err(anyhow::Error::new(error))
             }
         }
     }
