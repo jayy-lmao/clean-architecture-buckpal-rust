@@ -1,5 +1,4 @@
 use chrono::NaiveDateTime;
-use sqlx;
 
 #[derive(sqlx::FromRow)]
 pub struct AccountEntity {
@@ -11,12 +10,8 @@ pub struct AccountEntity {
 pub struct ActivityEntity {
     pub id: i64,
     pub timestamp: NaiveDateTime,
-    pub ownerAccountId: i64,
-    pub sourceAccountId: i64,
-    pub targetAccountId: i64,
+    pub owner_account_id: i64,
+    pub source_account_id: i64,
+    pub target_account_id: i64,
     pub amount: f32,
-}
-#[derive(sqlx::FromRow)]
-pub struct BalanceEntity {
-    pub totalAmount: f32,
 }

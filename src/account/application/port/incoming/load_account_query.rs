@@ -3,5 +3,5 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait LoadAccountQuery {
-    async fn loadAccount(&self, id: i64) -> Account;
+    async fn load_account(&self, id: i64) -> Account;
 }

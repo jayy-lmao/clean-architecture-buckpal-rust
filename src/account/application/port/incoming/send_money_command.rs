@@ -2,26 +2,26 @@ use crate::account::domain::*;
 
 #[derive(Debug)]
 pub struct SendMoneyCommand {
-    sourceAccountId: AccountId,
-    targetAccountId: AccountId,
+    source_account_id: AccountId,
+    target_account_id: AccountId,
     money: Money,
 }
 
 impl SendMoneyCommand {
-    pub fn new(sourceAccoundId: AccountId, targetAccoundId: AccountId, money: Money) -> Self {
+    pub fn new(source_account_id: AccountId, target_account_id: AccountId, money: Money) -> Self {
         Self {
-            sourceAccountId: sourceAccoundId,
-            targetAccountId: targetAccoundId,
+            source_account_id,
+            target_account_id,
             money,
         }
     }
     pub fn money(&self) -> Money {
         self.money
     }
-    pub fn getTargetAccountId(&self) -> AccountId {
-        self.targetAccountId
+    pub fn get_target_account_id(&self) -> AccountId {
+        self.target_account_id
     }
-    pub fn getSourceAccoundId(&self) -> AccountId {
-        self.sourceAccountId
+    pub fn get_source_account_id(&self) -> AccountId {
+        self.source_account_id
     }
 }

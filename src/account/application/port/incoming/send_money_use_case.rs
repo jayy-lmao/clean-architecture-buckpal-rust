@@ -1,8 +1,7 @@
 use super::SendMoneyCommand;
-use anyhow;
 use async_trait::async_trait;
 
 #[async_trait]
 pub trait SendMoneyUseCase {
-    async fn sendMoney(&self, command: SendMoneyCommand) -> anyhow::Result<bool>;
+    async fn send_money(&self, command: SendMoneyCommand) -> anyhow::Result<bool>;
 }

@@ -4,8 +4,8 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait AccountRepositoryTrait {
-    fn findById(&self, id: i64) -> Option<AccountEntity>;
+    fn find_by_id(&self, id: i64) -> Option<AccountEntity>;
 }
 pub trait ActivityRepositoryTrait {
-    fn findById(&self, id: i64) -> Option<ActivityEntity>;
+    fn find_by_id(&self, id: i64) -> Option<ActivityEntity>;
 }
