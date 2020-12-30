@@ -13,7 +13,6 @@ impl ActivityWindow {
         self.activities.push(a);
     }
     pub fn calculate_balance(&self, id: AccountId) -> Money {
-        dbg!(&self.activities);
         self.activities
             .iter()
             .map(|a| match (a.to_account == id, a.from_account == id) {

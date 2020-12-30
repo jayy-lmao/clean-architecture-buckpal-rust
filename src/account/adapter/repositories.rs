@@ -74,13 +74,12 @@ impl ActivityRepository {
             "INSERT INTO activities (
             amount,
             timestamp,
-            ownerAccountId,
-            sourceAccountId,
-            targetAccountId
+            owner_account_id,
+            source_account_id,
+            target_account_id
         ) values {};",
             values
         );
-        dbg!(&query);
 
         sqlx::query(&query[..]).execute(&self.pool).await?;
         Ok(())
@@ -141,9 +140,9 @@ impl ActivityRepository {
          * */
         let balance: (f32,) = sqlx::query_as(
             "
-           SELECT sum(amount) as totalAmount FROM activities
-           WHERE targetAccountId = $1
-           AND ownerAccountId = $2
+           SELECT sum(amount) as total_amount FROM activities
+           WHERE target_account_id = $1
+           AND owner_account_id = $2
            and timestamp < $3
            ",
         )
@@ -168,8 +167,8 @@ impl ActivityRepository {
         let balance: (f32,) = sqlx::query_as(
             "
            SELECT sum(amount) FROM activities
-           WHERE sourceAccountId = $1
-           AND ownerAccountId = $2
+           WHERE source_account_id = $1
+           AND owner_account_id = $2
            and timestamp < $3
            ",
         )

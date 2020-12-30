@@ -23,26 +23,26 @@ impl SendMoneyUseCase for SendMoneyService {
             .load_account_port
             .load_account(command.get_source_account_id(), timestamp)
             .await
-            .unwrap();
+            .expect("Source Account does not exist");
 
         let mut target_account = self
             .load_account_port
             .load_account(command.get_target_account_id(), timestamp)
             .await
-            .unwrap();
+            .expect("Target Account does not exist");
 
-        let money = dbg!(command.money());
+        let money = command.money();
 
         let withdraw_success = source_account.withdraw(money, command.get_target_account_id());
         let deposit_success = target_account.deposit(money, command.get_source_account_id());
 
         if withdraw_success && deposit_success {
             self.update_account_state_port
-                .update_account_state(dbg!(source_account), timestamp)
+                .update_account_state(source_account, timestamp)
                 .await?;
 
             self.update_account_state_port
-                .update_account_state(dbg!(target_account), timestamp)
+                .update_account_state(target_account, timestamp)
                 .await?;
         };
 
