@@ -36,14 +36,16 @@ There are only accounts of id 1,2,3 -- but you can modify this in the init.sql
 src
 ├── account
 │   ├── adapter
-│   │   ├── account_persistence_adapter.rs
-│   │   ├── entities.rs
 │   │   ├── incoming
 │   │   ├── mod.rs
 │   │   ├── outgoing
 │   │   │   ├── mod.rs
 │   │   │   └── persistence.rs
-│   │   ├── repositories.rs
+│   │   ├── persistence
+│   │   │   ├── account_persistence_adapter.rs
+│   │   │   ├── entities.rs
+│   │   │   ├── mod.rs
+│   │   │   └── repositories.rs
 │   │   └── web
 │   │       ├── account_controller.rs
 │   │       ├── mod.rs
