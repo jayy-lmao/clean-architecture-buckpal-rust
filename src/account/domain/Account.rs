@@ -4,63 +4,63 @@ use chrono::Utc;
 #[derive(Debug)]
 pub struct Account {
     pub id: AccountId,
-    baselineBalance: Money,
-    pub activityWindow: ActivityWindow,
+    baseline_balance: Money,
+    pub activity_window: ActivityWindow,
 }
 
 impl Account {
-    pub fn calculateBalance(&self) -> Money {
+    pub fn calculate_balance(&self) -> Money {
         Money::add(
-            self.baselineBalance,
-            self.activityWindow.calculateBalance(self.id),
+            self.baseline_balance,
+            self.activity_window.calculate_balance(self.id),
         )
     }
 
-    pub fn withdraw(&mut self, money: Money, targetAccountId: AccountId) -> bool {
-        if !self.mayWithdraw(money) {
+    pub fn withdraw(&mut self, money: Money, target_account_id: AccountId) -> bool {
+        if !self.may_withdraw(money) {
             return false;
         };
 
         let withdrawal = Activity {
-            fromAccount: self.id,
-            toAccount: targetAccountId,
+            from_account: self.id,
+            to_account: target_account_id,
             timestamp: Utc::now().naive_utc(),
             money,
         };
 
-        self.activityWindow.addActivity(withdrawal);
+        self.activity_window.add_activity(withdrawal);
 
         true
     }
 
-    pub fn mayWithdraw(&self, money: Money) -> bool {
-        Money::add(self.calculateBalance(), money.clone().negate()).isPositive()
+    pub fn may_withdraw(&self, money: Money) -> bool {
+        Money::add(self.calculate_balance(), money.clone().negate()).is_positive()
     }
 
-    pub fn deposit(&mut self, money: Money, sourceAccountId: AccountId) -> bool {
+    pub fn deposit(&mut self, money: Money, source_account_id: AccountId) -> bool {
         let deposit = Activity {
-            fromAccount: sourceAccountId,
-            toAccount: self.id,
+            from_account: source_account_id,
+            to_account: self.id,
             timestamp: Utc::now().naive_utc(),
             money,
         };
 
-        self.activityWindow.addActivity(deposit);
+        self.activity_window.add_activity(deposit);
 
         true
     }
     // pub fn withoutId(baselineBalance: Money, activityWindow: ActivityWindow) -> Account {
     //     return Account::new(accountId, baselineBalance, activityWindow)
     // }
-    pub fn withId(
-        accountId: AccountId,
-        baselineBalance: Money,
-        activityWindow: ActivityWindow,
+    pub fn with_id(
+        account_id: AccountId,
+        baseline_balance: Money,
+        activity_window: ActivityWindow,
     ) -> Account {
-        return Account {
-            id: accountId,
-            baselineBalance,
-            activityWindow,
-        };
+        Account {
+            id: account_id,
+            baseline_balance,
+            activity_window,
+        }
     }
 }

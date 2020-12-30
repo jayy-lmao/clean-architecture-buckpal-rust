@@ -9,18 +9,18 @@ impl ActivityWindow {
     pub fn new(activities: Vec<Activity>) -> Self {
         Self { activities }
     }
-    pub fn addActivity(&mut self, a: Activity) {
+    pub fn add_activity(&mut self, a: Activity) {
         self.activities.push(a);
     }
-    pub fn calculateBalance(&self, id: AccountId) -> Money {
+    pub fn calculate_balance(&self, id: AccountId) -> Money {
         dbg!(&self.activities);
         self.activities
             .iter()
-            .map(|a| match (a.toAccount == id, a.fromAccount == id) {
+            .map(|a| match (a.to_account == id, a.from_account == id) {
                 (true, _) => a.money,
                 (_, true) => a.money.clone().negate(),
                 _ => Money::new(0.),
             })
-            .fold(Money::new(0.), |acc, x| Money::add(acc, x))
+            .fold(Money::new(0.),  Money::add)
     }
 }

@@ -1,6 +1,5 @@
 use super::entities::AccountEntity;
 use super::entities::ActivityEntity;
-use super::entities::BalanceEntity;
 
 use anyhow;
 use chrono::NaiveDateTime;
@@ -16,20 +15,18 @@ lazy_static! {
         SqlitePool::connect_lazy(DATABASE_URL.as_str()).expect("Could not connect to database");
 }
 
-pub struct DbError(String);
 pub struct AccountRepository {
     pool: SqlitePool,
 }
 
 impl AccountRepository {
     pub fn new() -> Self {
-        println!("DBURL: {}", DATABASE_URL.as_str());
         Self {
             pool: DB_POOL.clone(),
         }
     }
 
-    pub async fn findById(&self, id: i64) -> anyhow::Result<AccountEntity> {
+    pub async fn find_by_id(&self, id: i64) -> anyhow::Result<AccountEntity> {
         let account = sqlx::query_as!(AccountEntity, r#"SELECT * FROM accounts WHERE id = $1"#, id)
             .fetch_one(&self.pool)
             .await?;
@@ -48,7 +45,7 @@ impl ActivityRepository {
         }
     }
 
-    pub async fn findById(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
+    pub async fn find_by_id(&self, id: i64) -> anyhow::Result<Vec<ActivityEntity>> {
         let activities = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities WHERE id = $1"#,
@@ -59,13 +56,17 @@ impl ActivityRepository {
         Ok(activities)
     }
 
-    pub async fn insertActivities(&self, activities: Vec<ActivityEntity>) -> anyhow::Result<()> {
+    pub async fn insert_activities(&self, activities: Vec<ActivityEntity>) -> anyhow::Result<()> {
         let values: String = activities
             .into_iter()
             .map(|a| {
                 format!(
                     "({}, \"{}\", {}, {}, {})",
-                    a.amount, a.timestamp, a.ownerAccountId, a.sourceAccountId, a.targetAccountId
+                    a.amount,
+                    a.timestamp,
+                    a.owner_account_id,
+                    a.source_account_id,
+                    a.target_account_id
                 )
             })
             .collect::<Vec<String>>()
@@ -83,22 +84,21 @@ impl ActivityRepository {
         );
         dbg!(&query);
 
-        let res = sqlx::query(&query[..]).execute(&self.pool).await;
-        dbg!(res);
+        sqlx::query(&query[..]).execute(&self.pool).await?;
         Ok(())
     }
 
-    pub async fn findLatestByOwner(
+    pub async fn find_latest_by_owner(
         &self,
-        ownerAccountId: i64,
+        owner_account_id: i64,
     ) -> anyhow::Result<Option<ActivityEntity>> {
         let activity = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities 
-            WHERE ownerAccountId = $1
+            WHERE owner_account_id = $1
             ORDER BY timestamp DESC
             LIMIT 1"#,
-            ownerAccountId,
+            owner_account_id,
         )
         .fetch_one(&self.pool)
         .await;
@@ -106,26 +106,26 @@ impl ActivityRepository {
         match activity {
             Ok(activity) => Ok(Some(activity)),
             Err(error) => {
-                if let error = sqlx::Error::RowNotFound {
+                if let _error = sqlx::Error::RowNotFound {
                     return Ok(None);
                 }
-                return Err(anyhow::Error::new(error));
+                Err(anyhow::Error::new(error))
             }
         }
     }
 
-    pub async fn findByOwnerSince(
+    pub async fn find_by_owner_since(
         &self,
-        ownerAccountId: i64,
+        owner_account_id: i64,
         since: NaiveDateTime,
     ) -> anyhow::Result<Vec<ActivityEntity>> {
         let activities = sqlx::query_as!(
             ActivityEntity,
             r#"SELECT * FROM activities 
-            WHERE ownerAccountId = $1
+            WHERE owner_account_id = $1
             AND timestamp >= $2
             "#,
-            ownerAccountId,
+            owner_account_id,
             since,
         )
         .fetch_all(&self.pool)
@@ -133,9 +133,9 @@ impl ActivityRepository {
 
         Ok(activities)
     }
-    pub async fn getDepositBalance(
+    pub async fn get_deposit_balance(
         &self,
-        accountId: i64,
+        account_id: i64,
         until: NaiveDateTime,
     ) -> anyhow::Result<f32> {
         /*
@@ -151,17 +151,17 @@ impl ActivityRepository {
            and timestamp < $3
            ",
         )
-        .bind(accountId)
-        .bind(accountId)
+        .bind(account_id)
+        .bind(account_id)
         .bind(until)
         .fetch_one(&self.pool)
         .await?;
         Ok(balance.0)
     }
 
-    pub async fn getWithdrawalBalance(
+    pub async fn get_withdrawal_balance(
         &self,
-        accountId: i64,
+        account_id: i64,
         until: NaiveDateTime,
     ) -> anyhow::Result<f32> {
         /*
@@ -177,8 +177,8 @@ impl ActivityRepository {
            and timestamp < $3
            ",
         )
-        .bind(accountId)
-        .bind(accountId)
+        .bind(account_id)
+        .bind(account_id)
         .bind(until)
         .fetch_one(&self.pool)
         .await?;

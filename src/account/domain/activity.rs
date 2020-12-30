@@ -3,8 +3,8 @@ use chrono::NaiveDateTime;
 
 #[derive(Debug)]
 pub struct Activity {
-    pub fromAccount: AccountId,
-    pub toAccount: AccountId,
+    pub from_account: AccountId,
+    pub to_account: AccountId,
     pub timestamp: NaiveDateTime,
     pub money: Money,
 }

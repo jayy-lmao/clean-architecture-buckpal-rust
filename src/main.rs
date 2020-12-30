@@ -26,30 +26,33 @@ async fn main() -> Result<(), std::io::Error> {
     dotenv::dotenv();
     let account_adapter = Arc::new(AccountPersistenceAdapter::default());
 
-    let getAccountBalanceService = Arc::new(GetAccountBalanceService {
-        loadAccountPort: account_adapter.clone(),
+    let get_account_balance_service = Arc::new(GetAccountBalanceService {
+        load_account_port: account_adapter.clone(),
     });
 
-    let sendMoneyService = Arc::new(SendMoneyService {
-        loadAccountPort: account_adapter.clone(),
-        updateAccountStatePort: account_adapter.clone(),
+    let send_money_service = Arc::new(SendMoneyService {
+        load_account_port: account_adapter.clone(),
+        update_account_state_port: account_adapter.clone(),
     });
     let send_money_controller = SendMoneyController {
-        sendMoneyUseCase: sendMoneyService.clone(),
+        send_money_use_case: send_money_service.clone(),
     };
 
     let account_controller = AccountController {
-        getAccountBalanceQuery: getAccountBalanceService,
+        get_account_balance_query: get_account_balance_service,
     };
 
-    let state = State { account_controller, send_money_controller };
+    let state = State {
+        account_controller,
+        send_money_controller,
+    };
 
     HttpServer::new(move || {
         App::new()
             .data(state.clone())
             .route("/", web::get().to(greet))
-            .service(account_routes::getAccountBalance)
-            .service(send_money_routes::sendMoney)
+            .service(account_routes::get_account_balance)
+            .service(send_money_routes::send_money)
     })
     .bind("127.0.0.1:8080")?
     .run()
