@@ -31,7 +31,9 @@ pub mod send_money_routes {
             .await
         {
             Ok(_) => HttpResponse::Ok(),
-            Err(_) => HttpResponse::InternalServerError(),
+            Err(_err) => {
+                HttpResponse::InternalServerError()
+            },
         }
     }
 }

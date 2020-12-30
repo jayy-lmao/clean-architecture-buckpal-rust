@@ -22,14 +22,12 @@ impl SendMoneyUseCase for SendMoneyService {
         let mut source_account = self
             .load_account_port
             .load_account(command.get_source_account_id(), timestamp)
-            .await
-            .expect("Source Account does not exist");
+            .await?;
 
         let mut target_account = self
             .load_account_port
             .load_account(command.get_target_account_id(), timestamp)
-            .await
-            .expect("Target Account does not exist");
+            .await?;
 
         let money = command.money();
 
