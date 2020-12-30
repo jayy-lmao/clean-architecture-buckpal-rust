@@ -21,6 +21,6 @@ impl ActivityWindow {
                 (_, true) => a.money.clone().negate(),
                 _ => Money::new(0.),
             })
-            .fold(Money::new(0.),  Money::add)
+            .fold(Money::new(0.), Money::add)
     }
 }

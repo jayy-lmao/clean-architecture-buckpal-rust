@@ -1,7 +1,6 @@
 use crate::account::application::port::incoming::GetAccountBalanceQuery;
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::domain::*;
-use anyhow;
 use async_trait::async_trait;
 use chrono::Utc;
 use std::sync::Arc;

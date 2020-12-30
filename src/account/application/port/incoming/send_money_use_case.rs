@@ -1,5 +1,4 @@
 use super::SendMoneyCommand;
-use anyhow;
 use async_trait::async_trait;
 
 #[async_trait]

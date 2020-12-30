@@ -1,10 +1,8 @@
 use super::entities::AccountEntity;
 use super::entities::ActivityEntity;
 
-use anyhow;
 use chrono::NaiveDateTime;
 use lazy_static::lazy_static;
-use sqlx;
 use sqlx::sqlite::SqlitePool;
 use std::env;
 

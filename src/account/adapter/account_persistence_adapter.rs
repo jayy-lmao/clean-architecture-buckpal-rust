@@ -3,7 +3,6 @@ use crate::account::adapter::repositories::{AccountRepository, ActivityRepositor
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::application::port::outgoing::update_account_state_port::UpdateAccountStatePort;
 use crate::account::domain::*;
-use anyhow;
 use async_trait::async_trait;
 use chrono::NaiveDateTime;
 
@@ -20,7 +19,7 @@ pub mod activity_mapper {
     pub fn map_domain_to_entity(activity: &Activity, owner_account_id: i64) -> ActivityEntity {
         ActivityEntity {
             id: -1, // this should be ignored by insert
-            owner_account_id: owner_account_id,
+            owner_account_id,
             source_account_id: activity.from_account.to_i64(),
             target_account_id: activity.to_account.to_i64(),
             timestamp: activity.timestamp,
@@ -68,7 +67,7 @@ impl UpdateAccountStatePort for AccountPersistenceAdapter {
     async fn update_account_state(
         &self,
         account: Account,
-        timestamp: NaiveDateTime,
+        _timestamp: NaiveDateTime,
     ) -> anyhow::Result<()> {
         dbg!("Updating Account State");
         let latest_recorded_transaction_date = self

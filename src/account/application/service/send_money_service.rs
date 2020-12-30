@@ -2,7 +2,6 @@ use crate::account::application::port::incoming::SendMoneyCommand;
 use crate::account::application::port::incoming::SendMoneyUseCase;
 use crate::account::application::port::outgoing::load_account_port::LoadAccountPort;
 use crate::account::application::port::outgoing::update_account_state_port::UpdateAccountStatePort;
-use anyhow;
 use async_trait::async_trait;
 use chrono::Utc;
 use std::sync::Arc;
