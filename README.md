@@ -28,3 +28,51 @@ To run:
 
 Then you can check out the completed endpoints:e.g. `GET localhost:8080/accounts/2/balance` or `POST localhost:8080/accounts/send/1/2/300`
 There are only accounts of id 1,2,3 -- but you can modify this in the init.sql
+
+
+## The design
+
+```
+src
+├── account
+│   ├── adapter
+│   │   ├── account_persistence_adapter.rs
+│   │   ├── entities.rs
+│   │   ├── incoming
+│   │   ├── mod.rs
+│   │   ├── outgoing
+│   │   │   ├── mod.rs
+│   │   │   └── persistence.rs
+│   │   ├── repositories.rs
+│   │   └── web
+│   │       ├── account_controller.rs
+│   │       ├── mod.rs
+│   │       └── send_money_controller.rs
+│   ├── application
+│   │   ├── mod.rs
+│   │   ├── port
+│   │   │   ├── incoming
+│   │   │   │   ├── get_account_balance_query.rs
+│   │   │   │   ├── load_account_query.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── send_money_command.rs
+│   │   │   │   └── send_money_use_case.rs
+│   │   │   ├── mod.rs
+│   │   │   └── outgoing
+│   │   │       ├── load_account_port.rs
+│   │   │       ├── mod.rs
+│   │   │       └── update_account_state_port.rs
+│   │   └── service
+│   │       ├── get_account_balance_service.rs
+│   │       ├── mod.rs
+│   │       └── send_money_service.rs
+│   ├── domain
+│   │   ├── account.rs
+│   │   ├── account_id.rs
+│   │   ├── activity.rs
+│   │   ├── activity_window.rs
+│   │   ├── mod.rs
+│   │   └── money.rs
+│   └── mod.rs
+└── main.rs
+```
